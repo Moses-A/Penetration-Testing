@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 # written by Moses Arocha
+# Program attempts to brute force into an FTP server, gain access, login in as an anonymous user, then will inject malicious code into the webpage after it has downloaded
 
 import ftplib
 import optparse
