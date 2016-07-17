@@ -47,7 +47,7 @@ def BruteForce(host, user, passwdFile):
 	
 
 def main():
-	parser = optparse.OptionParser("Usages For Program -H <Target Host> -u <user> -F <Password List>")
+	parser = optparse.OptionParser("Usages For Program -H <Target Host> -U <user> -F <Password List>")
 	parser.add_option('-H', '--Host', dest='tgtHost', type='string', help='Specify Target Host')
 	parser.add_option('-F','--File', dest='passwdFile', type='string', help='Specify The Password File')
 	parser.add_option('-U', '--User', dest='user', type='string', help='Specify The User')
