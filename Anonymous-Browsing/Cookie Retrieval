@@ -11,7 +11,7 @@ ab = Anonymous(proxies=[], user_agents = [('User-agent', 'GoodIncognitoMode')])	
 def GetDifferentCookies(website):
 	for attempt in range(1, 6):							# Sets a maximum of only six attempted cookie grabs
 		ab.anonymize()								# Calls the anonymize function from the Anonymous python file
-		f = open('CookieRetrieval.txt', 'w')					# Will write too and clear or create the CookieRetrieval.txt file
+		f = open('CookieRetrieval.txt', 'a')					# Will write too and clear or create the CookieRetrieval.txt file
 		f.write('\t[Attempt] Retrieving Cookies From ' + website + ' Page\n\n')	# Writes this introduction
 		response = ab.open(website)  						# Waits for the response from the website, SYN, SYN-ACK, ACK
 		for cookie in ab.cookie_jar:						# Will look for the cookie from that specific website
@@ -27,6 +27,7 @@ def main():
 	if website == None:
 		print parser.usage
 		exit(0)
+	f = open('CookieRetrieval.txt', 'w')					# Will write too and clear or create the CookieRetrieval.txt file
 	GetDifferentCookies(website)							# Calls for the GetDifferentCookies function
 	
 
