@@ -30,10 +30,11 @@ def scanTest(src, dst, iface, count):
 
 def main():
 	parser = optparse.OptionParser("Usages For Program: -I <Interface> -s <src> -t <Target> -c <count>")
-	parser.add_option('-I', des='iface', type='string', help = 'Specify Network Interface')
+	parser.add_option('-I', dest='iface', type='string', help = 'Specify Network Interface')
 	parser.add_option('-t', dest='tgt', type='string', help='Type Target Address')
 	parser.add_option('-s', dest='src', type='string', help='Specify Source IP Address')
 	parser.add_option('-c', dest='count', type='string', help='Specify Packet Count')
+	(options, args) = parser.parse_args()
 	if options.iface == None:
 		iface = 'wlan0'
 	else:
