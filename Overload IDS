@@ -28,6 +28,7 @@ def scanTest(src, dst, iface, count):
 	pkt = IP(src=src, dst=dst) / UDP(dport=10080) /RAW(load='AMANDAPANDAHANDACANDA')
 	send(pkt, iface=iface, count=count)
 
+# This program will attempt to overload an IDS by sending so many recongizable threats, that it overloads the services
 def main():
 	parser = optparse.OptionParser("Usages For Program: -I <Interface> -s <src> -t <Target> -c <count>")
 	parser.add_option('-I', dest='iface', type='string', help = 'Specify Network Interface')
