@@ -36,6 +36,12 @@ def main():
 	parser.add_option('-s', dest='src', type='string', help='Specify Source IP Address')
 	parser.add_option('-c', dest='count', type='string', help='Specify Packet Count')
 	(options, args) = parser.parse_args()
+	iface = options.iface
+	count = options.count
+	tgt = options.tgt
+	src = options.src
+	if not os.geteuid() == 0:
+		sys.exit('\t Please Run As Root!!') # Checks to see if the user is root, this code can only be run in root
 	if options.iface == None:
 		iface = 'wlan0'
 	else:
