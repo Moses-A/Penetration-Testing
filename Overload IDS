@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # written by Moses Arocha
 # Written with the help of TJ O'Connor in his book "Violent Python"
-
+# This code will attempt to overload the IDS through sending multiple alerts, causing the network administrator to attempt to fix the problems, can be used as a decoy
 import optparse
 from scapy.all import *
 from random import randint
