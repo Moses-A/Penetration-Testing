@@ -18,18 +18,18 @@ def ddosTest(source, destination, iface, count):
 	send(pkt, iface=iface, count=count)
 # After function is run it will alert the IDS and then the Network Administrator, this is a registered Attack
 
-
+#Generates packets that will send ntalkd Linux exploit for the first packet, the second will contain a mixture of hexadecimal and ASCII characters
 def exploitTest(source, destination, iface, count):
 	pkt = IP(src=source, dst=destination)/UDP(dport=518)/Raw(load="\x01\x03\x00\x00\x00\x00\x00\x01\x00\x02\x02\xE8")
 	send(pkt, iface=iface, count=count)
 	pkt = IP(src=source, dst=destination)/UDP(dport=635)/Raw(load="^\B0\x02\x89\x06\xFE\xC8\x89F\x04\xB0\x06\x89F")
 	send(pkt, iface=iface, count=count)
-	
+# After function is run it will alert the IDS for any exploit attempts
 
 def scanTest(source, destination, iface, count):
-	pkt = IP(src=source, dst=destination)/UDP(dport=7)/Raw(load='UKCyberPoliceForce')
+	pkt = IP(src=source, dst=destination)/UDP(dport=7)/Raw(load='nmap')
 	send(pkt)
-	pkt = IP(src=source, dst=destination)/UDP(dport=10080)/Raw(load='AMANDAPANDAHANDACANDA')
+	pkt = IP(src=source, dst=destination)/UDP(dport=10080)/Raw(load='observation')
 	send(pkt, iface=iface, count=count)
 	
 
