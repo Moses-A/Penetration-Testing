@@ -7,7 +7,7 @@ from scapy.all import *
 from random import randint
 
 def ddosTest(src, dst, iface, count):
-	pkt = IP(src=src, dst=dst)/ICMP(type=8, id=679)/Raw(load='1234567890')
+	pkt = IP(src=src, dst=dst)/ICMP(type=8, id=679)/Raw(load='1234')
 	send(pkt, iface=iface, count=count)
 	pkt = IP(src=src, dst=dst)/ICMP(type=0)/RAW(load='BBBBBBBBBBBB')
 	send(pkt, iface=iface, count=count)
