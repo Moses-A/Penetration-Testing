@@ -41,6 +41,8 @@ def scanTest(source, destination, iface, count):
 
 # The main function, will grab the users input then will insert it into the functions
 def main():
+	if not os.geteuid() == 0:
+		sys.exit('\tMust Be Root!')
 	parser = optparse.OptionParser("Usages For Program: -I <Interface> -S <Source> -T <Target> -C <Count>")
 	parser.add_option('-S', dest='src', type='string', help='Specify Source Address')
 	parser.add_option('-I', dest='iface', type='string', help='Specify Network Interface')
