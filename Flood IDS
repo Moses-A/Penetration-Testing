@@ -3,6 +3,7 @@
 # Written with the help of TJ O'Connor in his book "Violent Python"
 # The purpose of this code is to be detected! It will be detected by the IDS, this can be used as a distraction technique
 import optparse
+import os, sys
 from scapy.all import *
 from random import randint
 
