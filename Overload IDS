@@ -7,11 +7,11 @@ from scapy.all import *
 from random import randint
 
 def ddosTest(src, dst, iface, count):
-	pkt = IP(src=src,dst=dst)/ICMP(type=8,id=678)/Raw(load='1234')
+	pkt = IP(src=src,dst=dst)/ICMP(type=8,id=678)/Raw(load='1234567890')
 	send(pkt, iface=iface, count=count)
-	pkt = IP(src=src,dst=dst)/ICMP(type=0)/Raw(load='AAAAAAAAAA')
+	pkt = IP(src=src,dst=dst)/ICMP(type=0)/Raw(load='ASDFGHJKLP')
 	send(pkt, iface=iface, count=count)
-	pkt = IP(src=src,dst=dst)/UDP(dport=31335)/Raw(load='PONG')
+	pkt = IP(src=src,dst=dst)/UDP(dport=31335)/Raw(load='PINGPONG')
 	send(pkt, iface=iface, count=count)
 	pkt = IP(src=src,dst=dst)/ICMP(type=0,id=456)
 	send(pkt, iface=iface, count=count)
@@ -25,25 +25,26 @@ def exploitTest(src, dst, iface, count):
 	
 
 def scanTest(src, dst, iface, count):
-	pkt = IP(src=src, dst=dst)/UDP(dport=7)/Raw(load='cybercop')
+	pkt = IP(src=src, dst=dst)/UDP(dport=7)/Raw(load='USCyberPolicForce')
 	send(pkt)
-	pkt = IP(src=src, dst=dst)/UDP(dport=10080)/Raw(load='Amanda')
+	pkt = IP(src=src, dst=dst)/UDP(dport=10080)/Raw(load='AMANDAPANDAHANDACANDA')
 	send(pkt, iface=iface, count=count)
 	
 
 def main():
-	parser = optparse.OptionParser("Usages For Program: -i <interface> -s <src> -t <target> -c <count>")
-	parser.add_option('-s', dest='src', type='string', help='Specify Source Address')
-	parser.add_option('-i', dest='iface', type='string', help='Specify Network Interface')
-	parser.add_option('-t', dest='tgt', type='string', help='Specify Target Address')
-	parser.add_option('-c', dest='count', type='int', help='Specify Packet Count')
+	parser = optparse.OptionParser("Usages For Program: -I <Interface> -S <Source> -T <Target> -C <Count>")
+	parser.add_option('-S', dest='src', type='string', help='Specify Source Address')
+	parser.add_option('-I', dest='iface', type='string', help='Specify Network Interface')
+	parser.add_option('-T', dest='tgt', type='string', help='Specify Target Address')
+	parser.add_option('-C', dest='count', type='int', help='Specify Packet Count')
 	(options, args) = parser.parse_args()
 	if options.iface == None:
-		iface = 'eth0'
+		iface = 'wlan0'
 	else:
 		iface = options.iface
 	if options.src == None:
 		src = '.'.join([str(randint(1,254)) for x in range(4)])
+		print " Source IP Address: " + src
 	else:
 		src = options.src
 	if options.tgt == None:
@@ -52,7 +53,7 @@ def main():
 	else:
 		dst = options.tgt
 	if options.count == None:
-		count = 1
+		count = 5
 	else:
 		count = options.count
 	ddosTest(src, dst, iface, count)
