@@ -18,21 +18,28 @@ def ddosTest(source, destination, iface, count):
 	send(pkt, iface=iface, count=count)
 # After function is run it will alert the IDS and then the Network Administrator, this is a registered Attack
 
+# Attempts to replicate a ping scan, that might be commensed
+def FakePingTest(source, destination, iface, count):
+	pkt = IP(src=source, dst=destination)/ICMP(type=3,id=13)/Raw(load='ping')		# creating of the Ping packet
+	send(pkt, iface=iface, count=count)							# Sending the ping packet
+
 #Generates packets that will send ntalkd Linux exploit for the first packet, the second will contain a mixture of hexadecimal and ASCII characters
-def exploitTest(source, destination, iface, count):
+def exploitTest(source, destination, iface, count):			# Sends the two created packets over ports 518 and 635
 	pkt = IP(src=source, dst=destination)/UDP(dport=518)/Raw(load="\x01\x03\x00\x00\x00\x00\x00\x01\x00\x02\x02\xE8")
-	send(pkt, iface=iface, count=count)
+	send(pkt, iface=iface, count=count)							# Sending the created packet
 	pkt = IP(src=source, dst=destination)/UDP(dport=635)/Raw(load="^\B0\x02\x89\x06\xFE\xC8\x89F\x04\xB0\x06\x89F")
-	send(pkt, iface=iface, count=count)
+	send(pkt, iface=iface, count=count)							# Sending the created packet
 # After function is run it will alert the IDS for any exploit attempts
 
+# Will send packets with the signatures of the reconissance tools of Nmap and Observation
 def scanTest(source, destination, iface, count):
-	pkt = IP(src=source, dst=destination)/UDP(dport=7)/Raw(load='nmap')
-	send(pkt)
-	pkt = IP(src=source, dst=destination)/UDP(dport=10080)/Raw(load='observation')
-	send(pkt, iface=iface, count=count)
+	pkt = IP(src=source, dst=destination)/UDP(dport=53)/Raw(load='nmap')		
+	send(pkt)										# Sending the created packet
+	pkt = IP(src=source, dst=destination)/UDP(dport=126)/Raw(load='observation')
+	send(pkt, iface=iface, count=count)							# Sending the created packet
 	
 
+# The main function, will grab the users input then will insert it into the functions
 def main():
 	parser = optparse.OptionParser("Usages For Program: -I <Interface> -S <Source> -T <Target> -C <Count>")
 	parser.add_option('-S', dest='src', type='string', help='Specify Source Address')
@@ -41,11 +48,11 @@ def main():
 	parser.add_option('-C', dest='count', type='int', help='Specify Packet Count')
 	(options, args) = parser.parse_args()
 	if options.iface == None:
-		iface = 'wlan0'
+		iface = 'wlan0'									# The default interface is wlan0
 	else:
 		iface = options.iface
 	if options.src == None:
-		source = '.'.join([str(randint(1,254)) for x in range(4)])
+		source = '.'.join([str(randint(1,254)) for x in range(4)])			# If user does not insert in IP Address, it will automatically randomly create a source IP Address
 		print " Source IP Address: " + source
 	else:
 		source = options.src
@@ -55,11 +62,16 @@ def main():
 	else:
 		destination = options.tgt
 	if options.count == None:
-		count = 5
+		count = 5									# If not inserted by the user, the default count is 5 times
 	else:
 		count = options.count
+	print "\n\n\tDDOS TFN Packets Sent"
 	ddosTest(source, destination, iface, count)
+	print "\n\n\tFake Ping Scan"
+	FakePingTest(source, destination, iface, count)
+	print "\n\n\tNTALKD Linux Exploit Packets Sent"
 	exploitTest(source, destination, iface, count)
+	print "\n\n\tReconissance Tools Packets Sent"
 	scanTest(source, destination, iface, count)
 	
 
