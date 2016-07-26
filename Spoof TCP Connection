@@ -38,7 +38,7 @@ def SpoofConn(src, tgt, ack):
 
 def main():
 	if not os.geteuid() == 0:
-		sys.exit('\tMust Be Root!')
+		sys.exit('\tMust Be Root!')						# Makes sure the user is root, if not, will not run
 	parser = optparse.OptionParser("Usages From Program: -s <src for SYN Flood> -S <src for Spoofed Connection> -t <Target Address>")
 	parser.add_option('-s', dest='synSpoof', type='string', help='Specific src for SYN Flood')
 	parser.add_option('-S', dest='srcSpoof', type='string', help='Specific src for spoofed connection')
