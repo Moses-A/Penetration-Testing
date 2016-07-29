@@ -2,6 +2,7 @@
 # written by Moses Arocha
 # Program attempts to brute force into an FTP server, gain access, or login in as an anonymous user, 
 # then will inject malicious code into the default webpage after it has downloaded
+#Created in Python, with the help of TJ O'Connor's book "Violent Python"
 
 # IMPORTANT: The password list must be formatted liked this " username:password "
 import ftplib
