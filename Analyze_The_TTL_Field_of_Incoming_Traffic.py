@@ -28,5 +28,6 @@ def main():
     f.write('\t Packet Capturing While Analyzing TTL Fields\n\n')
     sniff(prn=CaptureTraffic, store=0)
 
+
 if __name__ == '__main__':
     main()
