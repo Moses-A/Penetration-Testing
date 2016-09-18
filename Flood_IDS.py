@@ -3,12 +3,12 @@
 # Written with the help of TJ O'Connor in his book "Violent Python"
 # The purpose of this code is to be detected! It will be detected by the IDS, this can be used as a distraction technique.
 
-
-import optparse
-import os
-import sys
 from scapy.all import *
 from random import randint
+
+import optparse
+import sys
+import os
 
 
 #DDOS TFN packets, with the ICMP ID of 678, sending it to the port 31335 a registered DDOS attack port
@@ -85,4 +85,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-	
