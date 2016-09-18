@@ -3,8 +3,12 @@
 # Written with the help of TJ O'Connor in his book "Violent Python"
 # This code attempts to sniff a wireless connection and grab any username and password entered that is unencrypted.
 
-import optparse
 from scapy.all import *
+
+import optparse
+import sys
+import os
+
 
 def findCredentials(pkt):	
     raw = pkt.sprintf('%Raw.load%')						
