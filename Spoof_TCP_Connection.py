@@ -2,9 +2,11 @@
 # written by Moses Arocha
 # Written with the help of TJ O'Connor in his book "Violent Python"
 
+from scapy.all import *
 
 import optparse
-from scapy.all import *
+import sys
+import os
 
 
 # Attempts to silence the server by sending SYN Packets to the silence the server and if it doesn't succeed it will end.
@@ -67,6 +69,7 @@ def main():
     print '\t[+] Attempting To Spoof TCP Connection'
     AttemptSpoof(srcSpoof, target, PredictSequence)		
     print '\t[+] Task Complete'
+	
 	
 if __name__ == '__main__':
     main()
