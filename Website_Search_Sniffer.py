@@ -2,9 +2,11 @@
 # written by Moses Arocha
 # Written with the help of TJ O'Connor in his book "Violent Python"
 
+from scapy.all import *
 
 import optparse
-from scapy.all import *
+import sys
+import os
 
 
 # Will search through the packets and grab the URL and from the URL will grab the portion of text after "query=" 
@@ -36,9 +38,9 @@ def main():
 	os.system('sudo airmon-ng start wlan0')		# Interacts with terminal to put the wireless NIC in monitor mode
 	print " \t The Sniffing Has Begun... Please Wait... \n\n"
 	sniff(filter='tcp port 80', prn=AnalyzeTraffic)
-
     except KeyboardInterrupt:
         exit(0)
+
 
 if __name__ == '__main__':
     main()
