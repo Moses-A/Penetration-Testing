@@ -1,4 +1,4 @@
-# Penetration-Testing
+# Penetration Testing
 
 Every single Python file in this repository is independent of each other, unless specified in the comments.
 
