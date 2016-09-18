@@ -2,10 +2,11 @@
 # written by Moses Arocha
 # Written with the help of TJ O'Connor in his book "Violent Python"
 
+from threading import *
+
 import pxssh
 import optparse
 import time
-from threading import *
 
 
 maxConnections = 5
