@@ -6,5 +6,5 @@ Every file is an independent tool that can aid in Penetration Testing. Use respe
 
 (Suggestion. Run all code as Super-user or Administrator)
 
-Please Run These Commands:
+Please Run These Files You Must Install:
   $ sudo apt-get install python-scapy
